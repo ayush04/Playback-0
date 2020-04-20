@@ -1,8 +1,18 @@
-const ytPlayer = require('yt-player');
+import { Player } from './components/player';
 
-const player = new ytPlayer('#player');
+const player = Player.getInstance('#player');
 
-player.load('tw9mYaLnnug');
-player.on('playing', () => {
-    console.log(player.getDuration());
+player.loadTrack('kJQP7kiw5Fk');
+
+document.getElementById('play-button')?.addEventListener('click', () => {
+    console.log('Playing');
+    player.playTrack();
+    document.getElementById('pause-button')?.classList.remove('hidden');
+    document.getElementById('play-button')?.classList.add('hidden');
+    
+});
+document.getElementById('pause-button')?.addEventListener('click', () => {
+    player.pauseTrack();
+    document.getElementById('pause-button')?.classList.add('hidden');
+    document.getElementById('play-button')?.classList.remove('hidden');
 });
