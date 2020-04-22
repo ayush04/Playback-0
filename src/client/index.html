@@ -9,7 +9,8 @@
     <link href="styles/font-awesome/css/brands.min.css" rel="stylesheet" type="text/css" />
     <link href="styles/font-awesome/css/solid.min.css" rel="stylesheet" type="text/css" />
     <link href="styles/app.css" rel="stylesheet" type="text/css" />
-    <script src="https://www.youtube.com/iframe_api" defer></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 <body>
     <div class="navbar-top bg-white">
@@ -19,18 +20,21 @@
             </a>
         </div>
         <div class="navbar-main padder-v-m bg-white">
-            <form class="navbar-form m-t-sm m-b-sm float-left">
+            <form class="navbar-form m-t-sm m-b-sm float-left" id="search-form">
                 <div class="form-group">
                     <div class="input-group w-md">
-                        <input type="text" id="search-bar" class="no-border bg-light form-control input-sm" placeholder="Search songs and artists">
+                        <input type="text" id="search-bar" class="no-border bg-light form-control input-sm" placeholder="Please signin to enable search">
                         <span class="input-group-btn">
-                            <button class="btn btn-sm bg-light" onclick="search(event)">
+                            <button class="btn btn-sm bg-light" id="search-button">
                                 <i class="fas fa-search"></i>
                             </button>
                         </span>
                     </div>
                 </div>
             </form>
+        </div>
+        <div class="padder-v-m float-sm-right m-2">
+            <button class="btn btn-sm btn-dark" id="signin-btn">Sign-in</button>
         </div>
     </div>
     <div class="aside-wrap">
@@ -149,7 +153,7 @@
         <div class="container-fluid bg-light wrapper-sm">
             <div class="player">
                 <div class="player-controls">
-                    <button class="player-attribute" onclick="previous()">
+                    <button class="player-attribute" id="previous-button">
                         <i class="fas fa-backward"></i>
                     </button>
                     <button class="player-attribute" id="play-button">
@@ -158,7 +162,7 @@
                     <button class="player-attribute hidden" id="pause-button">
                         <i class="fas fa-pause"></i>
                     </button>
-                    <button class="player-attribute" onclick="next()">
+                    <button class="player-attribute" id="next-button">
                         <i class="fas fa-forward"></i>
                     </button>
                     <div class="player-attribute title">

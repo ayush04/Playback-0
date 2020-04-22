@@ -63,6 +63,10 @@
     width: 240px;
 }
 
+.w-lg {
+    width: 360px;
+}
+
 .item {
     position: relative;
 }
@@ -194,4 +198,12 @@
 
 .hidden {
     display: none !important;
+}
+
+#search-bar {
+    height: 37px;
+}
+
+.disabled {
+    pointer-events: none;
 }
