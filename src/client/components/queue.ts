@@ -23,4 +23,8 @@ export class Queue {
         }
         return undefined;
     }
+
+    static getCurrentQueue(): Array<string> {
+        return Queue._queue;
+    }
 }
