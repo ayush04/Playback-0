@@ -1,14 +1,9 @@
 import { GoogleAuthentication } from './google-authentication';
-
-interface SearchResponse {
-    id: string,
-    title: string,
-    description: string,
-    thumbnail: string
-}
+import { Song } from '../components/song';
 
 export class Search {
-    private static MAX_RESULTS = 10;
+    private static MAX_RESULTS = 12;
+
     static search(q: string, part?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             gapi.load('client', () => {
@@ -16,7 +11,7 @@ export class Search {
                 if (!gapi.client.youtube) {
                     GoogleAuthentication.loadClient().then(() => {
                         return Search._search(q, part)
-                            .then((response: any) => resolve(Search._processResponse(response)))
+                            .then((response: Array<Song>) => resolve(Search._processResponse(response)))
                             .catch((err: Error) => {
                                 console.log(err);
                                 reject(err);
@@ -25,7 +20,7 @@ export class Search {
                 }
                 else {
                     return Search._search(q, part)
-                        .then((response: any) => resolve(Search._processResponse(response)))
+                        .then((response: Array<Song>) => resolve(Search._processResponse(response)))
                         .catch((err: Error) => {
                             console.log(err);
                             reject(err);
@@ -46,32 +41,27 @@ export class Search {
 
     
     private static _processResponse(response: any): Object {
-        let processedResponse = new Array<SearchResponse>();
+        let processedResponse = new Array<Song>();
 
         if (!response || response.status !== 200) {
             return {};
         }
         if (response.result.items && response.result.items.length > 0) {
             for (let item of response.result.items) {
-                const resObj: SearchResponse = {
-                    id: '',
-                    title: '',
-                    description: '',
-                    thumbnail: ''
-                };
 
-                resObj.id = item.id.videoId;
-                resObj.title = item.snippet.title;
-                resObj.description = item.snippet.description;
+                let thumbnail = '';
                 if (item.snippet.thumbnails.high) {
-                    resObj.thumbnail = item.snippet.thumbnails.high.url; 
+                    thumbnail = item.snippet.thumbnails.high.url; 
                 }
                 else if (item.snippet.thumbnails.medium) {
-                    resObj.thumbnail = item.snippet.thumbnails.medium.url; 
+                    thumbnail = item.snippet.thumbnails.medium.url; 
                 }
                 else {
-                    resObj.thumbnail = item.snippet.thumbnails.default.url; 
+                    thumbnail = item.snippet.thumbnails.default.url; 
                 }
+
+                const resObj = new Song(item.id.videoId, item.snippet.title, item.snippet.description,
+                    thumbnail);
                 processedResponse.push(resObj);
             }
         }

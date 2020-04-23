@@ -2,10 +2,11 @@ import { Player } from './components/player';
 import { Queue } from './components/queue';
 import { GoogleAuthentication } from './services/google-authentication';
 import { Search } from './services/search';
+import { Song } from './components/song';
 
 const player = Player.getInstance('#player');
 
-Queue.queue('DyDfgMOUjCI');
+//Queue.queue('DyDfgMOUjCI');
 /* Queue.queue('kJQP7kiw5Fk');
 Queue.queue('sWLQVA9Nl5s');
 Queue.queue('EbIlgD5InSg');
@@ -56,15 +57,16 @@ searchBtn?.addEventListener('click', (event) => {
     event.preventDefault();
     const searchTerm = (<HTMLInputElement>searchBar)?.value;
     if (searchTerm) {
-        Search.search(searchTerm).then(response => {
+        Search.search(searchTerm).then((response: Array<Song>) => {
             const searchResultDiv = document.getElementById('search-results');
             if (searchResultDiv) {
                 searchResultDiv.innerHTML = '';
-                for (let song of response) {
+                let song: Song;
+                for (song of response) {
                     let filledTemplate = template;
-                    filledTemplate = filledTemplate.replace('{{thumbnail}}', song.thumbnail);
-                    filledTemplate = filledTemplate.replace('{{title}}', song.title);
-                    filledTemplate = filledTemplate.replace('{{id}}', song.id);
+                    filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
+                    filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
+                    filledTemplate = filledTemplate.replace('{{id}}', song.getId());
                     searchResultDiv.innerHTML = searchResultDiv?.innerHTML + filledTemplate;
                 }
 
@@ -72,8 +74,14 @@ searchBtn?.addEventListener('click', (event) => {
                     element.addEventListener('click', () => {
                         const id = element.getAttribute('data-attribute');
                         if (id) {
-                            Queue.queue(id);
-                            console.log(Queue.getCurrentQueue());
+                            const songToQueue = Song.getSongFromList(response, id);
+                            if (songToQueue) {
+                                Queue.queue(songToQueue);
+                                console.log(Queue.getCurrentQueue());
+                            }
+                            else {
+                                console.log('Invalid song ID : ', id);
+                            }
                         }
                     });
                 });

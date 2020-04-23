@@ -1,6 +1,7 @@
 import YouTubePlayer from 'yt-player';
 
 import { Queue } from './queue';
+import { Song } from './song';
 
 export class Player extends YouTubePlayer {
     private static player: Player;
@@ -18,16 +19,16 @@ export class Player extends YouTubePlayer {
         return Player.player;
     };
 
-    loadTrack(trackId: string): void {
+    private loadTrack(trackId: string): void {
         Player._currentTrackId = trackId;
         Player.player.load(trackId);
     }
 
     playTrack(): void {
         if (!Player._currentTrackId) {
-            let trackId = Queue.next();
-            if (trackId) {
-                this.loadTrack(trackId);
+            let track = Queue.next();
+            if (track) {
+                this.loadTrack(track.getId());
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
@@ -53,7 +54,7 @@ export class Player extends YouTubePlayer {
         this.pauseTrack();
         let nextTrack = Queue.next();
         if (nextTrack) {
-            this.loadTrack(nextTrack);
+            this.loadTrack(nextTrack.getId());
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
@@ -64,7 +65,7 @@ export class Player extends YouTubePlayer {
         this.pauseTrack();
         let previousTrack = Queue.previous();
         if (previousTrack) {
-            this.loadTrack(previousTrack);
+            this.loadTrack(previousTrack.getId());
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
@@ -79,6 +80,15 @@ export class Player extends YouTubePlayer {
         else {
             document.getElementById('pause-button')?.classList.add('hidden');
             document.getElementById('play-button')?.classList.remove('hidden');
+        }
+    }
+
+    private updateTitle() {
+        let currentQueue = Queue.getCurrentQueue();
+        const song = Song.getSongFromList(currentQueue, Player._currentTrackId);
+        const titleDiv = document.getElementById('title');
+        if (titleDiv && song) {
+            titleDiv.innerHTML = song.getTitle();    
         }
     }
 
@@ -98,6 +108,10 @@ export class Player extends YouTubePlayer {
         document.getElementById('previous-button')?.addEventListener('click', () => {
             console.log('Previous track');
             this.previousTrack();
+        });
+
+        Player.player.on('playing', () => {
+            this.updateTitle();
         });
     }
 }
