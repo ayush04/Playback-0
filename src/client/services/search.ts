@@ -1,5 +1,5 @@
 import { GoogleAuthentication } from './google-authentication';
-import { Song } from '../components/song';
+import { Song } from '../models/song';
 
 export class Search {
     private static MAX_RESULTS = 12;
@@ -35,6 +35,7 @@ export class Search {
         return gapi.client.youtube.search.list({
             part: part ? part : 'snippet',
             q: q,
+            type: 'video',
             maxResults: Search.MAX_RESULTS
         })
     }

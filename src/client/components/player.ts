@@ -1,12 +1,14 @@
 import YouTubePlayer from 'yt-player';
 
 import { Queue } from './queue';
-import { Song } from './song';
+import { Song } from '../models/song';
+import { ProgressBar } from './progess-bar';
 
 export class Player extends YouTubePlayer {
     private static player: Player;
     private static _isPlaying: boolean;
     private static _currentTrackId: string;
+    private progress: ProgressBar | null = null;
 
     private constructor(domElID: string) {
         super(domElID);
@@ -32,6 +34,9 @@ export class Player extends YouTubePlayer {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
+                if (this.progress) {
+                    this.progress.start();
+                }
             }
             else {
                 console.log('No tracks to play');
@@ -41,6 +46,24 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            if (this.progress) {
+                this.progress.start();
+            }
+        }
+    }
+
+    queueAndPlay(song: Song): void {
+        Queue.queue(song);
+        if (Player._isPlaying) {
+            this.pauseTrack();
+        }
+        this.loadTrack(song.getId());
+        Queue.updateCurrentPlayingTrack(song.getId());
+        Player._isPlaying = true;
+        this.togglePlay();
+        Player.player.play();
+        if (this.progress) {
+            this.progress.start();
         }
     }
 
@@ -48,6 +71,9 @@ export class Player extends YouTubePlayer {
         Player._isPlaying = false;
         Player.player.pause();
         this.togglePlay();
+        if (this.progress) {
+            this.progress.stop();
+        }
     }
 
     nextTrack(): void {
@@ -58,6 +84,7 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            this.progress = null;
         }
     }
 
@@ -69,6 +96,7 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            this.progress = null;
         }
     }
 
@@ -112,6 +140,10 @@ export class Player extends YouTubePlayer {
 
         Player.player.on('playing', () => {
             this.updateTitle();
+            if (!this.progress) {
+                this.progress = new ProgressBar(Player.player.getDuration());
+                this.progress.start();    
+            }
         });
     }
 }

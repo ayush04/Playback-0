@@ -2,7 +2,7 @@ import { Player } from './components/player';
 import { Queue } from './components/queue';
 import { GoogleAuthentication } from './services/google-authentication';
 import { Search } from './services/search';
-import { Song } from './components/song';
+import { Song } from './models/song';
 
 const player = Player.getInstance('#player');
 
@@ -41,14 +41,25 @@ signBtnHandle?.addEventListener('click', () => {
 const template: string = `
 <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
     <div class="item">
-        <div class="r-2x">
-            <a>
-                <img class="img-fluid" src="{{thumbnail}}"/>
-            </a>
+        <div class="pos-rlt">
+            <div class="item-overlay bg-black-opacity">
+                <div class="center text-center w-full m-t-n">
+                    <a href class="playLink" data-attribute="{{id}}" data-attribute-action="play">
+                        <i class="fa fa-2x fa-play-circle text-white m-r-sm"></i>
+                    </a>
+                    <a href class="playLink" data-attribute="{{id}}" data-attribute-action="queue">
+                        <i class="fa fa-2x fa-arrow-alt-circle-down text-white"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="r-2x">
+                <a>
+                    <img class="img-fluid" src="{{thumbnail}}"/>
+                </a>
+            </div>
         </div>
         <div class="p-2 text-center text-muted">
             {{title}}
-            <button class="btn btn-sm btn-link queueBtn" data-attribute="{{id}}">Q it!</button>
         </div>
     </div>
 </div>
@@ -66,17 +77,24 @@ searchBtn?.addEventListener('click', (event) => {
                     let filledTemplate = template;
                     filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
                     filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
-                    filledTemplate = filledTemplate.replace('{{id}}', song.getId());
+                    filledTemplate = filledTemplate.replace(/{{id}}/g, song.getId());
                     searchResultDiv.innerHTML = searchResultDiv?.innerHTML + filledTemplate;
                 }
 
-                Array.from(document.getElementsByClassName('queueBtn')).forEach(element => {
-                    element.addEventListener('click', () => {
+                Array.from(document.getElementsByClassName('playLink')).forEach(element => {
+                    element.addEventListener('click', (event) => {
+                        event.preventDefault();
                         const id = element.getAttribute('data-attribute');
+                        const action = element.getAttribute('data-attribute-action');
                         if (id) {
-                            const songToQueue = Song.getSongFromList(response, id);
-                            if (songToQueue) {
-                                Queue.queue(songToQueue);
+                            const song = Song.getSongFromList(response, id);
+                            if (song) {
+                                if (action === 'play') {
+                                    player.queueAndPlay(song);
+                                }
+                                else {
+                                    Queue.queue(song);
+                                }
                                 console.log(Queue.getCurrentQueue());
                             }
                             else {

@@ -1,4 +1,4 @@
-import { Song } from "./song";
+import { Song } from "../models/song";
 
 export class Queue {
     private static _queue: Array<Song> = new Array<Song>();
@@ -28,5 +28,9 @@ export class Queue {
 
     static getCurrentQueue(): Array<Song> {
         return Queue._queue;
+    }
+
+    static updateCurrentPlayingTrack(trackId: string): void {
+        Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
 }
