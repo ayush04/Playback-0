@@ -13,7 +13,7 @@ export class ProgressBar {
         if (this.currentPosition < 100) {
             const progressBarEl = document.getElementById('progress-bar');
             if (progressBarEl) {
-                this.currentPosition++;
+                this.currentPosition = this.currentPosition + 0.1;
                 progressBarEl.style.width = this.currentPosition + '%'; 
             }
         }
@@ -22,7 +22,7 @@ export class ProgressBar {
     start(): void {
         this.timer = setInterval(() => {
             this.update(); 
-        }, (this.tick * 1000));
+        }, (this.tick * 100));
     }
 
     stop(): void {
