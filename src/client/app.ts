@@ -147,3 +147,4 @@ const updateQueueListener = () => {
     }
 }
 AppEvent.listen('queue-updated', updateQueueListener);
+Queue.initalize();
