@@ -39,9 +39,6 @@ export class Player extends YouTubePlayer {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
-                /*if (this.progress) {
-                    this.progress.start();
-                }*/
             }
             else {
                 console.log('No tracks to play');
@@ -51,9 +48,6 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
-            /*if (this.progress) {
-                this.progress.start();
-            }*/
         }
     }
 
@@ -67,9 +61,6 @@ export class Player extends YouTubePlayer {
         Player._isPlaying = true;
         this.togglePlay();
         Player.player.play();
-        /*if (this.progress) {
-            this.progress.start();
-        }*/
     }
 
     pauseTrack(): void {
@@ -167,52 +158,3 @@ export class Player extends YouTubePlayer {
         });
     }
 }
-
-/* export class Player {
-    private static player: YT.Player;
-
-    constructor(domElId: string, configObj: any) {
-        
-    }
-
-    static getInstance(domElId: string): YT.Player {
-        if (!Player.player) {
-            const configObj = {
-                height: '390',
-                width: '640',
-                events: {
-                    //onReady: Player.onReady,
-                    //onStateChange: Player.onStateChange
-                }
-            };
-            Player.player = new YT.Player(domElId, configObj);
-        }
-        return Player.player;
-    }
-
-    loadTrack(videoId: string): void {
-        Player.player.loadVideoById(videoId);
-    }
-
-    playTrack(): void {
-        Player.player.playVideo();
-    }
-
-    pauseTrack(): void {
-        Player.player.pauseVideo();
-    }
-    
-} */
-
-/* import YouTubePlayer from "yt-player";
-
-export class Player {
-    private static player: YouTubePlayer;
-
-    static getInstance(domElId: string) : YouTubePlayer {
-        if (!Player.player) {
-            Player.player = new YouTubePlayer(domElId);
-        }
-        return Player.player;
-    }
-} */
