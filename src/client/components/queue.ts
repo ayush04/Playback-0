@@ -1,4 +1,5 @@
 import { Song } from "../models/song";
+import { AppEvent } from '../services/event';
 
 export class Queue {
     private static _queue: Array<Song> = new Array<Song>();
@@ -6,9 +7,11 @@ export class Queue {
 
     static queue(song: Song): void {
         Queue._queue.push(song);
+        AppEvent.emit('queue-updated');
     }
 
     static dequeue(): Song | undefined {
+        AppEvent.emit('queue-updated');
         return Queue._queue.shift();
     }
 

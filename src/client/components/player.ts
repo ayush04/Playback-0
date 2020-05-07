@@ -26,7 +26,12 @@ export class Player extends YouTubePlayer {
         Player.player.load(trackId);
     }
 
-    playTrack(): void {
+    playTrack(trackId?: string): void {
+        if (trackId) {
+            this.stopTrack();
+            this.loadTrack(trackId);
+            Queue.updateCurrentPlayingTrack(trackId);
+        }
         if (!Player._currentTrackId) {
             let track = Queue.next();
             if (track) {
@@ -34,9 +39,9 @@ export class Player extends YouTubePlayer {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
-                if (this.progress) {
+                /*if (this.progress) {
                     this.progress.start();
-                }
+                }*/
             }
             else {
                 console.log('No tracks to play');
@@ -46,9 +51,9 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
-            if (this.progress) {
+            /*if (this.progress) {
                 this.progress.start();
-            }
+            }*/
         }
     }
 
@@ -62,9 +67,9 @@ export class Player extends YouTubePlayer {
         Player._isPlaying = true;
         this.togglePlay();
         Player.player.play();
-        if (this.progress) {
+        /*if (this.progress) {
             this.progress.start();
-        }
+        }*/
     }
 
     pauseTrack(): void {
@@ -79,25 +84,31 @@ export class Player extends YouTubePlayer {
     nextTrack(): void {
         this.pauseTrack();
         let nextTrack = Queue.next();
+        this.progress?.reset();
         if (nextTrack) {
             this.loadTrack(nextTrack.getId());
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
-            this.progress = null;
         }
     }
 
     previousTrack(): void {
         this.pauseTrack();
         let previousTrack = Queue.previous();
+        this.progress?.reset();
         if (previousTrack) {
             this.loadTrack(previousTrack.getId());
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
-            this.progress = null;
         }
+    }
+
+    stopTrack(): void {
+        this.pauseTrack();
+        this.progress?.reset();
+        Player.player.stop();
     }
 
     togglePlay(): void {
@@ -109,6 +120,10 @@ export class Player extends YouTubePlayer {
             document.getElementById('pause-button')?.classList.add('hidden');
             document.getElementById('play-button')?.classList.remove('hidden');
         }
+    }
+    
+    static seekTo(time: number): void {
+        Player.player.seek(time);
     }
 
     private updateTitle() {
@@ -141,9 +156,14 @@ export class Player extends YouTubePlayer {
         Player.player.on('playing', () => {
             this.updateTitle();
             if (!this.progress) {
-                this.progress = new ProgressBar(Player.player.getDuration());
-                this.progress.start();    
+                this.progress = ProgressBar.getInstance('progress-bar');    
             }
+            this.progress.setTime(Player.player.getDuration());
+            this.progress.start();
+        });
+
+        Player.player.on('ended', () => {
+            this.nextTrack();
         });
     }
 }
