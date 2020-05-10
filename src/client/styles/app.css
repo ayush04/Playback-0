@@ -291,3 +291,19 @@
 .queue-list:hover {
     cursor: pointer;
 }
+
+.ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.track-data {
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+}
+
+.inline-block {
+    display: inline-block;
+}

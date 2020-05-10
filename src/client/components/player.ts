@@ -3,6 +3,7 @@ import YouTubePlayer from 'yt-player';
 import { Queue } from './queue';
 import { Song } from '../models/song';
 import { ProgressBar } from './progess-bar';
+import { Utils } from '../services/utils';
 
 export class Player extends YouTubePlayer {
     private static player: Player;
@@ -39,6 +40,7 @@ export class Player extends YouTubePlayer {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
+                this.updateElapsedTime();
             }
             else {
                 console.log('No tracks to play');
@@ -48,6 +50,7 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            this.updateElapsedTime();
         }
     }
 
@@ -55,18 +58,21 @@ export class Player extends YouTubePlayer {
         Queue.queue(song);
         if (Player._isPlaying) {
             this.pauseTrack();
+            this.resetElapsedTime();
         }
         this.loadTrack(song.getId());
         Queue.updateCurrentPlayingTrack(song.getId());
         Player._isPlaying = true;
         this.togglePlay();
         Player.player.play();
+        this.updateElapsedTime();
     }
 
     pauseTrack(): void {
         Player._isPlaying = false;
         Player.player.pause();
         this.togglePlay();
+        this.stopTimer();
         if (this.progress) {
             this.progress.stop();
         }
@@ -76,6 +82,7 @@ export class Player extends YouTubePlayer {
         this.pauseTrack();
         let nextTrack = Queue.next();
         this.progress?.reset();
+        this.resetElapsedTime();
         if (nextTrack) {
             this.loadTrack(nextTrack.getId());
             Player._isPlaying = true;
@@ -117,13 +124,47 @@ export class Player extends YouTubePlayer {
         Player.player.seek(time);
     }
 
-    private updateTitle() {
+    private updateTitle(): void {
         let currentQueue = Queue.getCurrentQueue();
         const song = Song.getSongFromList(currentQueue, Player._currentTrackId);
         const titleDiv = document.getElementById('title');
         if (titleDiv && song) {
             titleDiv.innerHTML = song.getTitle();    
         }
+    }
+
+    private updateSongTotalTime(time: number): void {
+        const totalTimeEl = document.getElementById('total-time');
+        if (totalTimeEl) {
+            totalTimeEl.innerHTML = Utils.formatTime(time);
+        }
+    }
+
+    private static _timer: any;
+    private static currentTime = 0;
+    private updateElapsedTime(): void {
+        if (Player.currentTime < Player.player.getDuration()) {
+            Player._timer = setInterval(() => {
+                this.update(++Player.currentTime);
+            }, 1000);    
+        }
+    }
+
+    private update(currentTime: number): void {
+        const ellapsedTimeEl = document.getElementById('ellapsed-time');
+        if (ellapsedTimeEl) {
+            ellapsedTimeEl.innerHTML = Utils.formatTime(currentTime);
+        }
+    }
+
+    private stopTimer(): void {
+        clearInterval(Player._timer);
+    }
+
+    private resetElapsedTime(): void {
+        this.stopTimer();
+        Player.currentTime = 0;
+        this.update(0);
     }
 
     registerEventHandlers(): void {
@@ -150,10 +191,13 @@ export class Player extends YouTubePlayer {
                 this.progress = ProgressBar.getInstance('progress-bar');    
             }
             this.progress.setTime(Player.player.getDuration());
+            this.updateSongTotalTime(Player.player.getDuration());
+            this.updateElapsedTime();
             this.progress.start();
         });
 
         Player.player.on('ended', () => {
+            this.resetElapsedTime();
             this.nextTrack();
         });
     }
