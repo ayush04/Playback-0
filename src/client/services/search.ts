@@ -49,21 +49,23 @@ export class Search {
         }
         if (response.result.items && response.result.items.length > 0) {
             for (let item of response.result.items) {
+                if (item.snippet.channelTitle.toLowerCase().indexOf('vevo') > -1 || item.snippet.channelTitle.toLowerCase().indexOf('official') > -1
+                    || item.snippet.title.toLowerCase().indexOf('official') > -1) {
+                    let thumbnail = '';
+                    if (item.snippet.thumbnails.high) {
+                        thumbnail = item.snippet.thumbnails.high.url; 
+                    }
+                    else if (item.snippet.thumbnails.medium) {
+                        thumbnail = item.snippet.thumbnails.medium.url; 
+                    }
+                    else {
+                        thumbnail = item.snippet.thumbnails.default.url; 
+                    }
 
-                let thumbnail = '';
-                if (item.snippet.thumbnails.high) {
-                    thumbnail = item.snippet.thumbnails.high.url; 
+                    const resObj = new Song(item.id.videoId, item.snippet.title, item.snippet.description,
+                        thumbnail);
+                    processedResponse.push(resObj);
                 }
-                else if (item.snippet.thumbnails.medium) {
-                    thumbnail = item.snippet.thumbnails.medium.url; 
-                }
-                else {
-                    thumbnail = item.snippet.thumbnails.default.url; 
-                }
-
-                const resObj = new Song(item.id.videoId, item.snippet.title, item.snippet.description,
-                    thumbnail);
-                processedResponse.push(resObj);
             }
         }
         return processedResponse;
