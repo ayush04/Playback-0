@@ -10,7 +10,7 @@ export class GoogleAuthentication {
             gapi.load('auth2', () => {
                 // @ts-ignore
                 gapi.auth2.init({
-                    client_id: '494615400262-f7m4usct7pth64lrmuc76vsccp76fu3c.apps.googleusercontent.com'
+                    client_id: '<client_id>'
                 });
                 
                 // @ts-ignore
@@ -32,7 +32,7 @@ export class GoogleAuthentication {
     static loadClient() {
         return new Promise((resolve, reject) => {
             gapi.load('client', () => {
-                gapi.client.setApiKey('AIzaSyDDvjBedrhLf0rt62ckhs2fwWxtELcYeU8');
+                gapi.client.setApiKey('<api_key>');
                 return resolve(gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest", "v3"));
             });
         });
