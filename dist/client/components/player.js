@@ -139,9 +139,9 @@ class Player extends yt_player_1.default {
         }
     }
     update(currentTime) {
-        const ellapsedTimeEl = document.getElementById('ellapsed-time');
-        if (ellapsedTimeEl) {
-            ellapsedTimeEl.innerHTML = utils_1.Utils.formatTime(currentTime);
+        const elapsedTimeEl = document.getElementById('elapsed-time');
+        if (elapsedTimeEl) {
+            elapsedTimeEl.innerHTML = utils_1.Utils.formatTime(currentTime);
         }
     }
     stopTimer() {

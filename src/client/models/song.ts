@@ -44,7 +44,10 @@ export class Song {
     }
 
     static getSongFromList(list: Array<Song>, id: string | null): Song | null {
-        const filteredList = list.filter(song => song.getId() == id);
+        let filteredList = list.filter(song => song.getId() == id);
+        if (filteredList.length === 0) {
+            filteredList = list.filter(song => song.getVideoId() == id);
+        }
         return filteredList.length > 0 ? filteredList[0]: null;
     }
 }

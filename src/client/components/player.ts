@@ -151,9 +151,9 @@ export class Player extends YouTubePlayer {
     }
 
     private update(currentTime: number): void {
-        const ellapsedTimeEl = document.getElementById('ellapsed-time');
-        if (ellapsedTimeEl) {
-            ellapsedTimeEl.innerHTML = Utils.formatTime(currentTime);
+        const elapsedTimeEl = document.getElementById('elapsed-time');
+        if (elapsedTimeEl) {
+            elapsedTimeEl.innerHTML = Utils.formatTime(currentTime);
         }
     }
 
