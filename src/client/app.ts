@@ -135,7 +135,7 @@ const updateQueueListener = () => {
             let filledTemplate = navBlock;
             filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
             filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
-            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getArtistName());
+            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getVideoId()!);
             playlist.innerHTML = playlist?.innerHTML + filledTemplate;
         }
 
