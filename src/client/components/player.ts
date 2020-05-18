@@ -5,6 +5,9 @@ import { Song } from '../models/song';
 import { ProgressBar } from './progess-bar';
 import { Utils } from '../services/utils';
 
+/**
+ * TODO: Format this class - messy code
+ */
 export class Player extends YouTubePlayer {
     private static player: Player;
     private static _isPlaying: boolean;
@@ -31,6 +34,7 @@ export class Player extends YouTubePlayer {
         if (trackId) {
             this.stopTrack();
             this.loadTrack(trackId);
+            this.resetElapsedTime();
             Queue.updateCurrentPlayingTrack(trackId);
         }
         if (!Player._currentTrackId) {
@@ -40,6 +44,7 @@ export class Player extends YouTubePlayer {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
+                this.resetElapsedTime();
                 this.updateElapsedTime();
             }
             else {
@@ -50,6 +55,7 @@ export class Player extends YouTubePlayer {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            //this.resetElapsedTime();
             this.updateElapsedTime();
         }
     }
@@ -65,6 +71,7 @@ export class Player extends YouTubePlayer {
         Player._isPlaying = true;
         this.togglePlay();
         Player.player.play();
+        this.resetElapsedTime();
         this.updateElapsedTime();
     }
 
@@ -87,7 +94,9 @@ export class Player extends YouTubePlayer {
             this.loadTrack(nextTrack.getVideoId()!);
             Player._isPlaying = true;
             this.togglePlay();
+            this.resetElapsedTime();
             Player.player.play();
+            this.updateElapsedTime();
         }
     }
 
@@ -99,7 +108,9 @@ export class Player extends YouTubePlayer {
             this.loadTrack(previousTrack.getVideoId()!);
             Player._isPlaying = true;
             this.togglePlay();
+            this.resetElapsedTime();
             Player.player.play();
+            this.updateElapsedTime();
         }
     }
 
@@ -121,6 +132,7 @@ export class Player extends YouTubePlayer {
     }
     
     static seekTo(time: number): void {
+        Player.currentTime = time;
         Player.player.seek(time);
     }
 
@@ -143,22 +155,23 @@ export class Player extends YouTubePlayer {
     private static _timer: any;
     private static currentTime = 0;
     private updateElapsedTime(): void {
-        if (Player.currentTime < Player.player.getDuration()) {
+        if ((Player.currentTime < Player.player.getDuration()) && !Player._timer) {
             Player._timer = setInterval(() => {
                 this.update(++Player.currentTime);
             }, 1000);    
         }
     }
 
+    private elapsedTimeEl = document.getElementById('elapsed-time');
     private update(currentTime: number): void {
-        const elapsedTimeEl = document.getElementById('elapsed-time');
-        if (elapsedTimeEl) {
-            elapsedTimeEl.innerHTML = Utils.formatTime(currentTime);
+        if (this.elapsedTimeEl) {
+            this.elapsedTimeEl.innerHTML = Utils.formatTime(currentTime);
         }
     }
 
     private stopTimer(): void {
         clearInterval(Player._timer);
+        Player._timer = null;
     }
 
     private resetElapsedTime(): void {
@@ -197,7 +210,6 @@ export class Player extends YouTubePlayer {
         });
 
         Player.player.on('ended', () => {
-            this.resetElapsedTime();
             this.nextTrack();
         });
     }
