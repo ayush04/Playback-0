@@ -15,7 +15,7 @@ export class Queue {
         const _tempQueue = new Array<Song>();
         if (value) {
             value.forEach((item: any) => {
-                _tempQueue.push(new Song(item.id, item.title, item.description, item.thumbnail));
+                _tempQueue.push(new Song(item.id, item.title, item.description, item.artistName, item.thumbnail, item.videoId));
             });
         }
         return _tempQueue;

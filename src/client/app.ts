@@ -97,21 +97,25 @@ searchBtn?.addEventListener('click', (event) => {
                     element.addEventListener('click', (event) => {
                         event.preventDefault();
                         const id = element.getAttribute('data-attribute');
-                        const action = element.getAttribute('data-attribute-action');
-                        if (id) {
-                            const song = Song.getSongFromList(response, id);
-                            if (song) {
-                                if (action === 'play') {
-                                    player.queueAndPlay(song);
+                        const song = Song.getSongFromList(response, id);
+                        if (song) {
+                            Search.youTubeSearch(song.getTitle() + ' ' + song.getArtistName())
+                            .then(videoId => {
+                                const action = element.getAttribute('data-attribute-action');
+                                if (videoId) {
+                                    song.setVideoId(videoId);
+                                    if (action === 'play') {
+                                        player.queueAndPlay(song);
+                                    }
+                                    else {
+                                        Queue.queue(song);
+                                    }
+                                    console.log(Queue.getCurrentQueue());
                                 }
                                 else {
-                                    Queue.queue(song);
+                                    console.log('Invalid song ID : ', id);
                                 }
-                                console.log(Queue.getCurrentQueue());
-                            }
-                            else {
-                                console.log('Invalid song ID : ', id);
-                            }
+                            });    
                         }
                     });
                 });
@@ -131,7 +135,7 @@ const updateQueueListener = () => {
             let filledTemplate = navBlock;
             filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
             filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
-            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getId());
+            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getArtistName());
             playlist.innerHTML = playlist?.innerHTML + filledTemplate;
         }
 

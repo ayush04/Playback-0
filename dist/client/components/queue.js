@@ -13,7 +13,7 @@ class Queue {
         const _tempQueue = new Array();
         if (value) {
             value.forEach((item) => {
-                _tempQueue.push(new song_1.Song(item.id, item.title, item.description, item.thumbnail));
+                _tempQueue.push(new song_1.Song(item.id, item.title, item.description, item.artistName, item.thumbnail, item.videoId));
             });
         }
         return _tempQueue;

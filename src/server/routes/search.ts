@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { alive } from '../controllers/search';
+import { alive, getSuggestions } from '../controllers/search';
 
 const router = Router();
 
 router.get('/alive', alive);
-router.get('/search/:query');
+router.get('/search/:query', getSuggestions);
 
 export default router;

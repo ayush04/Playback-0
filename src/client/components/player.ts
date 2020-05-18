@@ -36,7 +36,7 @@ export class Player extends YouTubePlayer {
         if (!Player._currentTrackId) {
             let track = Queue.next();
             if (track) {
-                this.loadTrack(track.getId());
+                this.loadTrack(track.getVideoId()!);
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
@@ -60,7 +60,7 @@ export class Player extends YouTubePlayer {
             this.pauseTrack();
             this.resetElapsedTime();
         }
-        this.loadTrack(song.getId());
+        this.loadTrack(song.getVideoId()!);
         Queue.updateCurrentPlayingTrack(song.getId());
         Player._isPlaying = true;
         this.togglePlay();
@@ -84,7 +84,7 @@ export class Player extends YouTubePlayer {
         this.progress?.reset();
         this.resetElapsedTime();
         if (nextTrack) {
-            this.loadTrack(nextTrack.getId());
+            this.loadTrack(nextTrack.getVideoId()!);
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
@@ -96,7 +96,7 @@ export class Player extends YouTubePlayer {
         let previousTrack = Queue.previous();
         this.progress?.reset();
         if (previousTrack) {
-            this.loadTrack(previousTrack.getId());
+            this.loadTrack(previousTrack.getVideoId()!);
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();

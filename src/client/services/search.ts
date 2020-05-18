@@ -2,16 +2,16 @@ import { GoogleAuthentication } from './google-authentication';
 import { Song } from '../models/song';
 
 export class Search {
-    private static MAX_RESULTS = 12;
+    private static MAX_RESULTS = 1;
 
-    static search(q: string, part?: string): Promise<any> {
+    static youTubeSearch(q: string, part?: string): Promise<any> {
         return new Promise((resolve, reject) => {
             gapi.load('client', () => {
                 //@ts-ignore
                 if (!gapi.client.youtube) {
                     GoogleAuthentication.loadClient().then(() => {
                         return Search._search(q, part)
-                            .then((response: Array<Song>) => resolve(Search._processResponse(response)))
+                            .then((response: Array<Song>) => resolve(Search._processYoutubeResponse(response)))
                             .catch((err: Error) => {
                                 console.log(err);
                                 reject(err);
@@ -20,7 +20,7 @@ export class Search {
                 }
                 else {
                     return Search._search(q, part)
-                        .then((response: Array<Song>) => resolve(Search._processResponse(response)))
+                        .then((response: Array<Song>) => resolve(Search._processYoutubeResponse(response)))
                         .catch((err: Error) => {
                             console.log(err);
                             reject(err);
@@ -28,6 +28,13 @@ export class Search {
                 }
             });
         });
+    }
+
+    static search(q: string): Promise<any> {
+        return fetch('http://playback.io:3000/search/' + encodeURIComponent(q))
+            .then(response => response.json())
+            .then(responseJson => Search._processResponse(responseJson))
+            .catch(error => console.log(error));
     }
 
     private static _search(q: string, part?: string): Promise<any> {
@@ -40,11 +47,30 @@ export class Search {
         })
     }
 
+    private static _processYoutubeResponse(response: any): String {
+        let songId = '';
+        if (response && response.result && response.result.items) {
+            songId = response.result.items[0].id.videoId;
+        }
+        return songId;
+    }
     
     private static _processResponse(response: any): Object {
         let processedResponse = new Array<Song>();
 
-        if (!response || response.status !== 200) {
+        if (!response || !response.results) {
+            return {};
+        }
+        for (let item of response.results) {
+            let thumbnail = item.artworkUrl100 ? item.artworkUrl100 :
+                (item.artworkUrl60 ? item.artworkUrl60 : (item.artworkUrl30 ? item.artworkUrl30 : ''));
+            
+            const resObj = new Song(item.trackId, item.trackName, item.collectionName, item.artistName,
+                thumbnail);
+            
+            processedResponse.push(resObj);
+        }
+        /* if (!response || response.status !== 200) {
             return {};
         }
         if (response.result.items && response.result.items.length > 0) {
@@ -66,8 +92,8 @@ export class Search {
                         thumbnail);
                     processedResponse.push(resObj);
                 }
-            }
-        }
+            } 
+        }*/
         return processedResponse;
     }
 }

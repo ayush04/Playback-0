@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const google_authentication_1 = require("./google-authentication");
 const song_1 = require("../models/song");
 class Search {
-    static search(q, part) {
+    static youTubeSearch(q, part) {
         return new Promise((resolve, reject) => {
             gapi.load('client', () => {
                 //@ts-ignore
                 if (!gapi.client.youtube) {
                     google_authentication_1.GoogleAuthentication.loadClient().then(() => {
                         return Search._search(q, part)
-                            .then((response) => resolve(Search._processResponse(response)))
+                            .then((response) => resolve(Search._processYoutubeResponse(response)))
                             .catch((err) => {
                             console.log(err);
                             reject(err);
@@ -19,7 +19,7 @@ class Search {
                 }
                 else {
                     return Search._search(q, part)
-                        .then((response) => resolve(Search._processResponse(response)))
+                        .then((response) => resolve(Search._processYoutubeResponse(response)))
                         .catch((err) => {
                         console.log(err);
                         reject(err);
@@ -27,6 +27,12 @@ class Search {
                 }
             });
         });
+    }
+    static search(q) {
+        return fetch('http://playback.io:3000/search/' + encodeURIComponent(q))
+            .then(response => response.json())
+            .then(responseJson => Search._processResponse(responseJson))
+            .catch(error => console.log(error));
     }
     static _search(q, part) {
         // @ts-ignore
@@ -37,9 +43,25 @@ class Search {
             maxResults: Search.MAX_RESULTS
         });
     }
+    static _processYoutubeResponse(response) {
+        let songId = '';
+        if (response && response.result && response.result.items) {
+            songId = response.result.items[0].id.videoId;
+        }
+        return songId;
+    }
     static _processResponse(response) {
         let processedResponse = new Array();
-        if (!response || response.status !== 200) {
+        if (!response || !response.results) {
+            return {};
+        }
+        for (let item of response.results) {
+            let thumbnail = item.artworkUrl100 ? item.artworkUrl100 :
+                (item.artworkUrl60 ? item.artworkUrl60 : (item.artworkUrl30 ? item.artworkUrl30 : ''));
+            const resObj = new song_1.Song(item.trackId, item.trackName, item.collectionName, item.artistName, thumbnail);
+            processedResponse.push(resObj);
+        }
+        /* if (!response || response.status !== 200) {
             return {};
         }
         if (response.result.items && response.result.items.length > 0) {
@@ -56,14 +78,16 @@ class Search {
                     else {
                         thumbnail = item.snippet.thumbnails.default.url;
                     }
-                    const resObj = new song_1.Song(item.id.videoId, item.snippet.title, item.snippet.description, thumbnail);
+
+                    const resObj = new Song(item.id.videoId, item.snippet.title, item.snippet.description,
+                        thumbnail);
                     processedResponse.push(resObj);
                 }
             }
-        }
+        }*/
         return processedResponse;
     }
 }
 exports.Search = Search;
-Search.MAX_RESULTS = 12;
+Search.MAX_RESULTS = 1;
 //# sourceMappingURL=search.js.map

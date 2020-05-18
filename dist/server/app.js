@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = require("body-parser");
+const cors_1 = __importDefault(require("cors"));
 const search_1 = __importDefault(require("./routes/search"));
 const app = express_1.default();
+app.use(cors_1.default());
 app.use(body_parser_1.json());
 app.use('/', search_1.default);
 app.use((err, req, res, next) => {
