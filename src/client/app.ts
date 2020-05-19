@@ -40,7 +40,7 @@ signBtnHandle?.addEventListener('click', () => {
 });
 
 const mainContainerBlock: string = `
-<div class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
+<div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">
     <div class="item">
         <div class="pos-rlt">
             <div class="item-overlay bg-black-opacity">
