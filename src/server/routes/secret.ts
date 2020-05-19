@@ -3,7 +3,7 @@ import { getAPIKey, getClientId } from '../controllers/secret';
 
 const router = Router();
 
-router.get('/secret/id', getClientId);
-router.get('/secret/key', getAPIKey);
+router.get('/id', getClientId);
+router.get('/key', getAPIKey);
 
 export default router;

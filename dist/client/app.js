@@ -1,4 +1,5 @@
 "use strict";
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 const player_1 = require("./components/player");
 const queue_1 = require("./components/queue");
@@ -19,18 +20,19 @@ const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 const searchBtn = document.getElementById('search-button');
 const checkIfAuthenticated = () => {
+    var _a, _b, _c, _d, _e;
     if (google_authentication_1.GoogleAuthentication.isAuthenticated()) {
-        signBtnHandle === null || signBtnHandle === void 0 ? void 0 : signBtnHandle.classList.add('hidden');
-        searchForm === null || searchForm === void 0 ? void 0 : searchForm.classList.remove('disabled');
-        searchBar === null || searchBar === void 0 ? void 0 : searchBar.setAttribute('placeholder', 'Search songs and artists');
+        (_a = signBtnHandle) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
+        (_b = searchForm) === null || _b === void 0 ? void 0 : _b.classList.remove('disabled');
+        (_c = searchBar) === null || _c === void 0 ? void 0 : _c.setAttribute('placeholder', 'Search songs and artists');
     }
     else {
-        signBtnHandle === null || signBtnHandle === void 0 ? void 0 : signBtnHandle.classList.remove('hidden');
-        searchForm === null || searchForm === void 0 ? void 0 : searchForm.classList.add('disabled');
+        (_d = signBtnHandle) === null || _d === void 0 ? void 0 : _d.classList.remove('hidden');
+        (_e = searchForm) === null || _e === void 0 ? void 0 : _e.classList.add('disabled');
     }
 };
 checkIfAuthenticated();
-signBtnHandle === null || signBtnHandle === void 0 ? void 0 : signBtnHandle.addEventListener('click', () => {
+(_a = signBtnHandle) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
     google_authentication_1.GoogleAuthentication.authenticate().then(() => {
         checkIfAuthenticated();
     });
@@ -71,12 +73,13 @@ const navBlock = `
     </div>
 </li>
 `;
-searchBtn === null || searchBtn === void 0 ? void 0 : searchBtn.addEventListener('click', (event) => {
+(_b = searchBtn) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => {
     var _a;
     event.preventDefault();
     const searchTerm = (_a = searchBar) === null || _a === void 0 ? void 0 : _a.value;
     if (searchTerm) {
         search_1.Search.search(searchTerm).then((response) => {
+            var _a;
             const searchResultDiv = document.getElementById('search-results');
             if (searchResultDiv) {
                 searchResultDiv.innerHTML = '';
@@ -86,7 +89,7 @@ searchBtn === null || searchBtn === void 0 ? void 0 : searchBtn.addEventListener
                     filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
                     filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
                     filledTemplate = filledTemplate.replace(/{{id}}/g, song.getId());
-                    searchResultDiv.innerHTML = (searchResultDiv === null || searchResultDiv === void 0 ? void 0 : searchResultDiv.innerHTML) + filledTemplate;
+                    searchResultDiv.innerHTML = ((_a = searchResultDiv) === null || _a === void 0 ? void 0 : _a.innerHTML) + filledTemplate;
                 }
                 Array.from(document.getElementsByClassName('playLink')).forEach(element => {
                     element.addEventListener('click', (event) => {
@@ -119,6 +122,7 @@ searchBtn === null || searchBtn === void 0 ? void 0 : searchBtn.addEventListener
     }
 });
 const updateQueueListener = () => {
+    var _a;
     console.log('Queue updated');
     const currentQueue = queue_1.Queue.getCurrentQueue();
     const playlist = document.getElementById('playlist');
@@ -129,8 +133,8 @@ const updateQueueListener = () => {
             let filledTemplate = navBlock;
             filledTemplate = filledTemplate.replace('{{thumbnail}}', song.getThumbnail());
             filledTemplate = filledTemplate.replace('{{title}}', song.getTitle());
-            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getArtistName());
-            playlist.innerHTML = (playlist === null || playlist === void 0 ? void 0 : playlist.innerHTML) + filledTemplate;
+            filledTemplate = filledTemplate.replace(/{{id}}/g, song.getVideoId());
+            playlist.innerHTML = ((_a = playlist) === null || _a === void 0 ? void 0 : _a.innerHTML) + filledTemplate;
         }
         Array.from(document.getElementsByClassName('queue-list')).forEach(element => {
             element.addEventListener('click', (event) => {

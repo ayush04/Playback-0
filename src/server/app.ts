@@ -4,13 +4,15 @@ import cors from 'cors';
 
 import { connect } from 'mongoose';
 import searchRoutes from './routes/search';
-
+import secretRoutes from './routes/secret';
+    
 const app = express();
 
 app.use(cors());
 app.use(json());
 
 app.use('/', searchRoutes);
+app.use('/secret', secretRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({

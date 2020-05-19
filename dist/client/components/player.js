@@ -8,10 +8,14 @@ const queue_1 = require("./queue");
 const song_1 = require("../models/song");
 const progess_bar_1 = require("./progess-bar");
 const utils_1 = require("../services/utils");
+/**
+ * TODO: Format this class - messy code
+ */
 class Player extends yt_player_1.default {
     constructor(domElID) {
         super(domElID);
         this.progress = null;
+        this.elapsedTimeEl = document.getElementById('elapsed-time');
     }
     static getInstance(domElID) {
         if (!Player.player) {
@@ -28,6 +32,7 @@ class Player extends yt_player_1.default {
         if (trackId) {
             this.stopTrack();
             this.loadTrack(trackId);
+            this.resetElapsedTime();
             queue_1.Queue.updateCurrentPlayingTrack(trackId);
         }
         if (!Player._currentTrackId) {
@@ -37,6 +42,7 @@ class Player extends yt_player_1.default {
                 Player._isPlaying = true;
                 this.togglePlay();
                 Player.player.play();
+                this.resetElapsedTime();
                 this.updateElapsedTime();
             }
             else {
@@ -47,6 +53,7 @@ class Player extends yt_player_1.default {
             Player._isPlaying = true;
             this.togglePlay();
             Player.player.play();
+            //this.resetElapsedTime();
             this.updateElapsedTime();
         }
     }
@@ -61,6 +68,7 @@ class Player extends yt_player_1.default {
         Player._isPlaying = true;
         this.togglePlay();
         Player.player.play();
+        this.resetElapsedTime();
         this.updateElapsedTime();
     }
     pauseTrack() {
@@ -82,7 +90,9 @@ class Player extends yt_player_1.default {
             this.loadTrack(nextTrack.getVideoId());
             Player._isPlaying = true;
             this.togglePlay();
+            this.resetElapsedTime();
             Player.player.play();
+            this.updateElapsedTime();
         }
     }
     previousTrack() {
@@ -94,7 +104,9 @@ class Player extends yt_player_1.default {
             this.loadTrack(previousTrack.getVideoId());
             Player._isPlaying = true;
             this.togglePlay();
+            this.resetElapsedTime();
             Player.player.play();
+            this.updateElapsedTime();
         }
     }
     stopTrack() {
@@ -115,6 +127,7 @@ class Player extends yt_player_1.default {
         }
     }
     static seekTo(time) {
+        Player.currentTime = time;
         Player.player.seek(time);
     }
     updateTitle() {
@@ -132,20 +145,20 @@ class Player extends yt_player_1.default {
         }
     }
     updateElapsedTime() {
-        if (Player.currentTime < Player.player.getDuration()) {
+        if ((Player.currentTime < Player.player.getDuration()) && !Player._timer) {
             Player._timer = setInterval(() => {
                 this.update(++Player.currentTime);
             }, 1000);
         }
     }
     update(currentTime) {
-        const elapsedTimeEl = document.getElementById('elapsed-time');
-        if (elapsedTimeEl) {
-            elapsedTimeEl.innerHTML = utils_1.Utils.formatTime(currentTime);
+        if (this.elapsedTimeEl) {
+            this.elapsedTimeEl.innerHTML = utils_1.Utils.formatTime(currentTime);
         }
     }
     stopTimer() {
         clearInterval(Player._timer);
+        Player._timer = null;
     }
     resetElapsedTime() {
         this.stopTimer();
@@ -181,7 +194,6 @@ class Player extends yt_player_1.default {
             this.progress.start();
         });
         Player.player.on('ended', () => {
-            this.resetElapsedTime();
             this.nextTrack();
         });
     }
