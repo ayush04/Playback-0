@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="<client_id>.apps.googleusercontent.com">
     <title>Playback</title>
     <link href="styles/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="styles/font-awesome/css/fontawesome.min.css" rel="stylesheet" type="text/css" />
@@ -11,6 +12,8 @@
     <link href="styles/app.css" rel="stylesheet" type="text/css" />
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
 </head>
 <body>
     <div class="navbar-top bg-white">
@@ -34,7 +37,7 @@
             </form>
         </div>
         <div class="padder-v-m float-sm-right m-2">
-            <button class="btn btn-sm btn-dark" id="signin-btn">Sign-in</button>
+            <div class="g-signin2" id="signin-btn"></div>
         </div>
     </div>
     <div class="aside-wrap">
