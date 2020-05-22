@@ -54,4 +54,11 @@ export class Queue {
     static updateCurrentPlayingTrack(trackId: string): void {
         Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
+
+    static deleteTrack(videoId: string): void {
+        const pos = Queue._queue.findIndex(song => song.getVideoId() === videoId);
+        Queue._queue.splice(pos, 1);
+        AppEvent.emit('queue-updated');
+        Storage.save('CURRENT_QUEUE', Queue._queue);
+    }
 }

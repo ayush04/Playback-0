@@ -271,7 +271,7 @@
 
 .thumb-sm {
     display: inline-block;
-    width: 40px;
+    width: 30px;
 }
 
 .thumb-sm img {
@@ -307,4 +307,29 @@
 
 .inline-block {
     display: inline-block;
+}
+
+.title {
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 12px;
+}
+
+.text-ellipsis {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.playlist-play-btn, .playlist-pause-btn {
+    width: 20px;
+}
+
+button.bg-light:hover {
+    background-color: inherit !important;
+}
+
+a:hover {
+    cursor: pointer;
 }

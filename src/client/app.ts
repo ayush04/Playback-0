@@ -66,7 +66,7 @@ const mainContainerBlock: string = `
 </div>
 `;
 
-const navBlock = `
+/*const navBlock = `
 <li class="list-group-item no-border no-padder padder-h-sm queue-list" data-attribute={{id}}>
     <span class="float-left thumb-sm m-r m-t-xs">
         <img src="{{thumbnail}}" alt="..." class="r">
@@ -75,7 +75,25 @@ const navBlock = `
         <div><small>{{title}}</small></div>
     </div>
 </li>
-`; 
+`;*/
+
+const navBlock = `
+<li class="list-group-item no-border no-padder padder-h-sm">
+    <div class="float-right m-l padder-h-sm">
+        <a class="delete-track" data-attribute={{id}}><i class="fa fa-times-circle"></i></a>
+    </div>
+    <span class="m-r-sm float-left padder-h-sm">
+        <button class="playlist-play-btn player-attribute bg-light no-padder" data-attribute={{id}}><i class="fas fa-play"></i></button>
+        <button class="playlist-pause-btn player-attribute bg-light no-padder hidden"><i class="fas fa-pause"></i></button>
+    </span>
+    <div class="clear text-ellipsis">
+        <span class="float-left thumb-sm m-r m-t-xs">
+            <img src="{{thumbnail}}" alt="..." class="r">
+        </span>
+        <span class="title">{{title}}</span>
+    </div>
+</li> 
+`;
 searchBtn?.addEventListener('click', (event) => {
     event.preventDefault();
     const searchTerm = (<HTMLInputElement>searchBar)?.value;
@@ -139,12 +157,33 @@ const updateQueueListener = () => {
             playlist.innerHTML = playlist?.innerHTML + filledTemplate;
         }
 
-        Array.from(document.getElementsByClassName('queue-list')).forEach(element => {
+        Array.from(document.getElementsByClassName('playlist-play-btn')).forEach(element => {
             element.addEventListener('click', (event) => { 
                 event.preventDefault();
                 const id = element.getAttribute('data-attribute');
                 if (id) {
                     player.playTrack(id);
+                    element.classList.add('hidden');
+                    element.nextElementSibling?.classList.remove('hidden');
+                }
+            });
+        });
+
+        Array.from(document.getElementsByClassName('playlist-pause-btn')).forEach(element => {
+            element.addEventListener('click', (event) => { 
+                event.preventDefault();
+                player.pauseTrack();
+                element.classList.add('hidden');
+                element.previousElementSibling?.classList.remove('hidden');
+            });
+        });
+
+        Array.from(document.getElementsByClassName('delete-track')).forEach(element => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                const id = element.getAttribute('data-attribute');
+                if (id) {
+                    Queue.deleteTrack(id);
                 }
             });
         });
