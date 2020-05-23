@@ -198,6 +198,18 @@ export class Player extends YouTubePlayer {
             this.previousTrack();
         });
 
+        document.getElementById('vol-up')?.addEventListener('click', () => {
+            Player.player.mute();
+            document.getElementById('vol-up')?.classList.add('hidden');
+            document.getElementById('vol-mute')?.classList.remove('hidden');
+        });
+
+        document.getElementById('vol-mute')?.addEventListener('click', () => {
+            Player.player.unMute();
+            document.getElementById('vol-mute')?.classList.add('hidden');
+            document.getElementById('vol-up')?.classList.remove('hidden');
+        });
+
         Player.player.on('playing', () => {
             this.updateTitle();
             if (!this.progress) {
