@@ -21,7 +21,7 @@ app.use((err, req, res, next) => {
         message: err.message
     });
 });
-mongoose_1.connect('<connection_string>')
+mongoose_1.connect('mongodb+srv://ayush:09WKUkeskOYXv8a3@pbcl0-mekwn.mongodb.net/test?retryWrites=true&w=majority')
     .then(() => {
     app.listen(3000);
 })

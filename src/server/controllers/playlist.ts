@@ -25,3 +25,14 @@ export const saveSong: RequestHandler = (req: Request, res: Response) => {
         return res.status(400).json(err);
     });
 }
+
+export const getSong: RequestHandler = (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    Song.find({ id: id }).then(song => {
+        return res.status(200).json(song);
+    })
+    .then(err => {
+        return res.status(400).json(err);
+    });
+}

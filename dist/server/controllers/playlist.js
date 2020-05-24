@@ -23,4 +23,13 @@ exports.saveSong = (req, res) => {
         return res.status(400).json(err);
     });
 };
+exports.getSong = (req, res) => {
+    const id = req.params.id;
+    song_1.Song.find({ id: id }).then(song => {
+        return res.status(200).json(song);
+    })
+        .then(err => {
+        return res.status(400).json(err);
+    });
+};
 //# sourceMappingURL=playlist.js.map
