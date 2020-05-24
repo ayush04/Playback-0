@@ -166,7 +166,7 @@ class Player extends yt_player_1.default {
         this.update(0);
     }
     registerEventHandlers() {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         (_a = document.getElementById('play-button')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
             console.log('Playing');
             this.playTrack();
@@ -182,6 +182,18 @@ class Player extends yt_player_1.default {
         (_d = document.getElementById('previous-button')) === null || _d === void 0 ? void 0 : _d.addEventListener('click', () => {
             console.log('Previous track');
             this.previousTrack();
+        });
+        (_e = document.getElementById('vol-up')) === null || _e === void 0 ? void 0 : _e.addEventListener('click', () => {
+            var _a, _b;
+            Player.player.mute();
+            (_a = document.getElementById('vol-up')) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
+            (_b = document.getElementById('vol-mute')) === null || _b === void 0 ? void 0 : _b.classList.remove('hidden');
+        });
+        (_f = document.getElementById('vol-mute')) === null || _f === void 0 ? void 0 : _f.addEventListener('click', () => {
+            var _a, _b;
+            Player.player.unMute();
+            (_a = document.getElementById('vol-mute')) === null || _a === void 0 ? void 0 : _a.classList.add('hidden');
+            (_b = document.getElementById('vol-up')) === null || _b === void 0 ? void 0 : _b.classList.remove('hidden');
         });
         Player.player.on('playing', () => {
             this.updateTitle();

@@ -37,6 +37,13 @@ checkIfAuthenticated();
         checkIfAuthenticated();
     });
 });
+const onSignIn = (googleUser) => {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+};
 const mainContainerBlock = `
 <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">
     <div class="item">
@@ -63,7 +70,7 @@ const mainContainerBlock = `
     </div>
 </div>
 `;
-const navBlock = `
+/*const navBlock = `
 <li class="list-group-item no-border no-padder padder-h-sm queue-list" data-attribute={{id}}>
     <span class="float-left thumb-sm m-r m-t-xs">
         <img src="{{thumbnail}}" alt="..." class="r">
@@ -72,6 +79,23 @@ const navBlock = `
         <div><small>{{title}}</small></div>
     </div>
 </li>
+`;*/
+const navBlock = `
+<li class="list-group-item no-border no-padder padder-h-sm">
+    <div class="float-right m-l padder-h-sm">
+        <a class="delete-track" data-attribute={{id}}><i class="fa fa-times-circle"></i></a>
+    </div>
+    <span class="m-r-sm float-left padder-h-sm">
+        <button class="playlist-play-btn player-attribute bg-light no-padder" data-attribute={{id}}><i class="fas fa-play"></i></button>
+        <button class="playlist-pause-btn player-attribute bg-light no-padder hidden"><i class="fas fa-pause"></i></button>
+    </span>
+    <div class="clear text-ellipsis">
+        <span class="float-left thumb-sm m-r m-t-xs">
+            <img src="{{thumbnail}}" alt="..." class="r">
+        </span>
+        <span class="title">{{title}}</span>
+    </div>
+</li> 
 `;
 (_b = searchBtn) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => {
     var _a;
@@ -136,12 +160,33 @@ const updateQueueListener = () => {
             filledTemplate = filledTemplate.replace(/{{id}}/g, song.getVideoId());
             playlist.innerHTML = ((_a = playlist) === null || _a === void 0 ? void 0 : _a.innerHTML) + filledTemplate;
         }
-        Array.from(document.getElementsByClassName('queue-list')).forEach(element => {
+        Array.from(document.getElementsByClassName('playlist-play-btn')).forEach(element => {
             element.addEventListener('click', (event) => {
+                var _a;
                 event.preventDefault();
                 const id = element.getAttribute('data-attribute');
                 if (id) {
                     player.playTrack(id);
+                    element.classList.add('hidden');
+                    (_a = element.nextElementSibling) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+                }
+            });
+        });
+        Array.from(document.getElementsByClassName('playlist-pause-btn')).forEach(element => {
+            element.addEventListener('click', (event) => {
+                var _a;
+                event.preventDefault();
+                player.pauseTrack();
+                element.classList.add('hidden');
+                (_a = element.previousElementSibling) === null || _a === void 0 ? void 0 : _a.classList.remove('hidden');
+            });
+        });
+        Array.from(document.getElementsByClassName('delete-track')).forEach(element => {
+            element.addEventListener('click', (event) => {
+                event.preventDefault();
+                const id = element.getAttribute('data-attribute');
+                if (id) {
+                    queue_1.Queue.deleteTrack(id);
                 }
             });
         });

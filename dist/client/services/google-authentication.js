@@ -11,7 +11,7 @@ class GoogleAuthentication {
                     .then(response => response.json())
                     .then(responseJson => {
                     // @ts-ignore
-                    gapi.auth2.init({
+                    gapi.auth2.getAuthInstance({
                         client_id: responseJson.CLIENT_ID
                     });
                     // @ts-ignore

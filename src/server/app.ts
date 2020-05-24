@@ -5,6 +5,7 @@ import cors from 'cors';
 import { connect } from 'mongoose';
 import searchRoutes from './routes/search';
 import secretRoutes from './routes/secret';
+import playlistRoutes from './routes/playlist';
     
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(json());
 
 app.use('/', searchRoutes);
 app.use('/secret', secretRoutes);
+app.use('/', playlistRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({
@@ -20,10 +22,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-/*connect('mongodb+srv://ayush:09WKUkeskOYXv8a3@pbcl0-mekwn.mongodb.net/playback?retryWrites=true&w=majority')
+connect('<connection_string>')
     .then(() => {
         app.listen(3000); 
     })
-    .catch(err => console.log('Cannot connect to DB', err));*/
+    .catch(err => console.log('Cannot connect to DB', err));
 
-app.listen(3000);
+//app.listen(3000);
