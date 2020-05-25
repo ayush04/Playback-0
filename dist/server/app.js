@@ -10,12 +10,14 @@ const mongoose_1 = require("mongoose");
 const search_1 = __importDefault(require("./routes/search"));
 const secret_1 = __importDefault(require("./routes/secret"));
 const playlist_1 = __importDefault(require("./routes/playlist"));
+const playcount_1 = __importDefault(require("./routes/playcount"));
 const app = express_1.default();
 app.use(cors_1.default());
 app.use(body_parser_1.json());
 app.use('/', search_1.default);
 app.use('/secret', secret_1.default);
 app.use('/', playlist_1.default);
+app.use('/', playcount_1.default);
 app.use((err, req, res, next) => {
     res.status(500).json({
         message: err.message

@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-//import { Song } from './song';
 
 const playlistSchema = new Schema({
     id: {

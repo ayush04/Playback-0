@@ -57,4 +57,14 @@ exports.addSongToPlaylist = (req, res) => {
         return res.status(400).json(err);
     });
 };
+exports.removeSongFromPlaylist = (req, res) => {
+    const songId = req.params.songId;
+    const playlistId = req.params.id;
+    playlist_1.Playlist.findOneAndUpdate({ id: playlistId }, { "$pull": { "songs": songId } }).then(response => {
+        return res.status(200).json(response);
+    })
+        .catch(err => {
+        return res.status(400).json(err);
+    });
+};
 //# sourceMappingURL=playlist.js.map

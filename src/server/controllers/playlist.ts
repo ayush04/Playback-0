@@ -65,3 +65,15 @@ export const addSongToPlaylist: RequestHandler = (req: Request, res: Response) =
         return res.status(400).json(err);    
     });
 }
+
+export const removeSongFromPlaylist: RequestHandler = (req: Request, res: Response) => {
+    const songId = req.params.songId;
+    const playlistId = req.params.id;
+
+    Playlist.findOneAndUpdate({ id: playlistId }, { "$pull": { "songs": songId } }).then(response => {
+        return res.status(200).json(response);
+    })
+    .catch(err => {
+        return res.status(400).json(err);    
+    });
+}
