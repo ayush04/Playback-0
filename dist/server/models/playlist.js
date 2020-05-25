@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const song_1 = require("./song");
+//import { Song } from './song';
 const playlistSchema = new mongoose_1.Schema({
-    songs: [song_1.Song]
+    id: {
+        type: String,
+        required: true
+    },
+    songs: [String]
 });
 exports.Playlist = mongoose_1.model('Playlist', playlistSchema);
 //# sourceMappingURL=playlist.js.map

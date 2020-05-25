@@ -1,8 +1,12 @@
 import { Schema, model } from 'mongoose';
-import { Song } from './song';
+//import { Song } from './song';
 
 const playlistSchema = new Schema({
-    songs: [Song]
+    id: {
+        type: String,
+        required: true
+    },
+    songs: [String]
 });
 
 export const Playlist = model('Playlist', playlistSchema);

@@ -1,5 +1,7 @@
 import { RequestHandler, Request, Response } from 'express';
 import { Song } from '../models/song';
+import { Playlist } from '../models/playlist';
+import { randomNumber } from '../utils/utils';
 
 export const saveSong: RequestHandler = (req: Request, res: Response) => {
     const id = req.body.id;
@@ -34,5 +36,32 @@ export const getSong: RequestHandler = (req: Request, res: Response) => {
     })
     .then(err => {
         return res.status(400).json(err);
+    });
+}
+
+export const createPlaylist: RequestHandler = (req: Request, res: Response) => {
+    const songArr = req.body.songs;
+    const playList = new Playlist({
+        id: randomNumber(),
+        songs: songArr
+    });
+
+    playList.save().then(response => {
+        return res.status(201).json(response);
+    })
+    .catch(err => {
+        return res.status(400).json(err);    
+    });
+}
+
+export const addSongToPlaylist: RequestHandler = (req: Request, res: Response) => {
+    const songArr = req.body.songs;
+    const playListId = req.params.id;
+
+    Playlist.findOneAndUpdate({ id: playListId }, {"$push": {"songs": songArr} }).then(response => {
+        return res.status(200).json(response);
+    })
+    .catch(err => {
+        return res.status(400).json(err);    
     });
 }
