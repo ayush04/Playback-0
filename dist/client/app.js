@@ -64,7 +64,7 @@ const mainContainerBlock = `
                 </a>
             </div>
         </div>
-        <div class="p-2 text-center text-muted">
+        <div class="p-2 text-center text-muted text-ellipsis">
             {{title}}
         </div>
     </div>
@@ -89,11 +89,11 @@ const navBlock = `
         <button class="playlist-play-btn player-attribute bg-light no-padder" data-attribute={{id}}><i class="fas fa-play"></i></button>
         <button class="playlist-pause-btn player-attribute bg-light no-padder hidden"><i class="fas fa-pause"></i></button>
     </span>
-    <div class="clear text-ellipsis">
+    <div class="clear">
         <span class="float-left thumb-sm m-r m-t-xs">
             <img src="{{thumbnail}}" alt="..." class="r">
         </span>
-        <span class="title">{{title}}</span>
+        <span class="title text-ellipsis">{{title}}</span>
     </div>
 </li> 
 `;
