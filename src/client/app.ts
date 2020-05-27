@@ -45,7 +45,7 @@ const onSignIn = (googleUser: any) => {
     console.log('Name: ' + profile.getName());
     console.log('Image URL: ' + profile.getImageUrl());
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-  }
+}
 
 const mainContainerBlock: string = `
 <div class="col-xs-4 col-sm-3 col-md-3 col-lg-2">

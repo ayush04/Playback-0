@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const song_1 = require("../models/song");
 const playlist_1 = require("../models/playlist");
 const utils_1 = require("../utils/utils");
+const CURRENTLY_PLAYING = new Map();
 exports.saveSong = (req, res) => {
     const id = req.body.id;
     const title = req.body.title;
@@ -65,6 +66,48 @@ exports.removeSongFromPlaylist = (req, res) => {
     })
         .catch(err => {
         return res.status(400).json(err);
+    });
+};
+exports.addCurrentlyPlaying = (req, res) => {
+    const songId = req.params.id;
+    let number = 1;
+    if (CURRENTLY_PLAYING.has(songId)) {
+        number = CURRENTLY_PLAYING.get(songId) + number;
+    }
+    CURRENTLY_PLAYING.set(songId, number);
+    return res.status(201).json({
+        songId: songId,
+        currentlyPlaying: number
+    });
+};
+exports.removeCurrentlyPlaying = (req, res) => {
+    const songId = req.params.id;
+    if (CURRENTLY_PLAYING.has(songId)) {
+        let number = CURRENTLY_PLAYING.get(songId);
+        if (number === 1) {
+            CURRENTLY_PLAYING.delete(songId);
+        }
+        else {
+            CURRENTLY_PLAYING.set(songId, number - 1);
+        }
+        return res.status(200).json({
+            currentlyPlaying: number - 1
+        });
+    }
+    else {
+        return res.status(400).json({
+            error: 'Song ' + songId + ' is not currently playing'
+        });
+    }
+};
+exports.getAllCurrentlyPlayingSongs = (req, res) => {
+    const currentlyPlaying = [];
+    CURRENTLY_PLAYING.forEach((value, key) => {
+        console.log(value + ' :: ' + key);
+        currentlyPlaying.push(key);
+    });
+    return res.status(200).json({
+        songs: currentlyPlaying
     });
 };
 //# sourceMappingURL=playlist.js.map

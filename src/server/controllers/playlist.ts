@@ -3,6 +3,8 @@ import { Song } from '../models/song';
 import { Playlist } from '../models/playlist';
 import { randomNumber } from '../utils/utils';
 
+const CURRENTLY_PLAYING = new Map<String, number>();
+
 export const saveSong: RequestHandler = (req: Request, res: Response) => {
     const id = req.body.id;
     const title = req.body.title;
@@ -75,5 +77,53 @@ export const removeSongFromPlaylist: RequestHandler = (req: Request, res: Respon
     })
     .catch(err => {
         return res.status(400).json(err);    
+    });
+}
+
+export const addCurrentlyPlaying: RequestHandler = (req: Request, res: Response) => {
+    const songId = req.params.id;
+
+    let number = 1;
+    if (CURRENTLY_PLAYING.has(songId)) {
+        number = CURRENTLY_PLAYING.get(songId)! + number;
+    }
+    CURRENTLY_PLAYING.set(songId, number);
+    return res.status(201).json({
+        songId: songId,
+        currentlyPlaying: number
+    });
+}
+
+export const removeCurrentlyPlaying: RequestHandler = (req: Request, res: Response) => {
+    const songId = req.params.id;
+
+    if (CURRENTLY_PLAYING.has(songId)) {
+        let number = CURRENTLY_PLAYING.get(songId);
+        if (number === 1) {
+            CURRENTLY_PLAYING.delete(songId);
+        }
+        else {
+            CURRENTLY_PLAYING.set(songId, number! - 1);
+        }
+        return res.status(200).json({
+            currentlyPlaying: number! - 1
+        });
+    }
+    else {
+        return res.status(400).json({
+            error: 'Song ' + songId + ' is not currently playing'
+        });
+    }
+}
+
+export const getAllCurrentlyPlayingSongs: RequestHandler = (req: Request, res: Response) => {
+    const currentlyPlaying: String[] = [];
+    CURRENTLY_PLAYING.forEach((value, key) => { 
+        console.log(value + ' :: ' + key);
+        currentlyPlaying.push(key);
+    });
+    
+    return res.status(200).json({
+        songs: currentlyPlaying
     });
 }

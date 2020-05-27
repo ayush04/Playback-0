@@ -1,11 +1,16 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import cors from 'cors';
+import passport from 'passport';
 
 import { connect } from 'mongoose';
 import searchRoutes from './routes/search';
 import secretRoutes from './routes/secret';
 import playlistRoutes from './routes/playlist';
+import playCountRoutes from './routes/playcount';
+import authRoutes from './routes/google-oauth';
+
+import oauth from './controllers/google-oauth';
     
 const app = express();
 
@@ -15,6 +20,11 @@ app.use(json());
 app.use('/', searchRoutes);
 app.use('/secret', secretRoutes);
 app.use('/', playlistRoutes);
+app.use('/', playCountRoutes);
+app.use('/', authRoutes);
+
+oauth();
+app.use(passport.initialize());
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({
