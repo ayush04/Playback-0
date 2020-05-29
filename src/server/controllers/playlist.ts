@@ -42,9 +42,12 @@ export const getSong: RequestHandler = (req: Request, res: Response) => {
 }
 
 export const createPlaylist: RequestHandler = (req: Request, res: Response) => {
+    const playListName = req.params.name;
     const songArr = req.body.songs;
+
     const playList = new Playlist({
         id: randomNumber(),
+        name: playListName,
         songs: songArr
     });
 

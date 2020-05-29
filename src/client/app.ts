@@ -4,6 +4,7 @@ import { GoogleAuthentication } from './services/google-authentication';
 import { Search } from './services/search';
 import { Song } from './models/song';
 import { AppEvent } from './services/event';
+import { Playlist } from './services/playlist';
 
 const player = Player.getInstance('#player');
 
@@ -125,23 +126,41 @@ searchBtn?.addEventListener('click', (event) => {
                         const id = element.getAttribute('data-attribute');
                         const song = Song.getSongFromList(response, id);
                         if (song) {
-                            Search.youTubeSearch(song.getTitle() + ' ' + song.getArtistName())
-                            .then(videoId => {
-                                const action = element.getAttribute('data-attribute-action');
-                                if (videoId) {
-                                    song.setVideoId(videoId);
+                            const action = element.getAttribute('data-attribute-action');
+                            Playlist.getSong(song.getId())
+                            .then(savedSong => {
+                                if (savedSong && savedSong.length > 0) {
                                     if (action === 'play') {
                                         player.queueAndPlay(song);
                                     }
                                     else {
                                         Queue.queue(song);
                                     }
-                                    console.log(Queue.getCurrentQueue());
                                 }
                                 else {
-                                    console.log('Invalid song ID : ', id);
+                                    // fetch videoId and save song
+                                    Search.youTubeSearch(song.getTitle() + ' ' + song.getArtistName())
+                                    .then(videoId => {
+                                        const action = element.getAttribute('data-attribute-action');
+                                        if (videoId) {
+                                            song.setVideoId(videoId);
+                                            if (action === 'play') {
+                                                player.queueAndPlay(song);
+                                            }
+                                            else {
+                                                Queue.queue(song);
+                                            }
+                                            Playlist.saveSong(song)
+                                                .then(() => console.log('Song saved'))
+                                                .catch(err => console.log(err));
+                                            console.log(Queue.getCurrentQueue());
+                                        }
+                                        else {
+                                            console.log('Invalid song ID : ', id);
+                                        }
+                                    }); 
                                 }
-                            });    
+                            })   
                         }
                     });
                 });

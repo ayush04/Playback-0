@@ -5,6 +5,10 @@ const playlistSchema = new Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     songs: [String]
 });
 

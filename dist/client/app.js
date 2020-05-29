@@ -7,6 +7,7 @@ const google_authentication_1 = require("./services/google-authentication");
 const search_1 = require("./services/search");
 const song_1 = require("./models/song");
 const event_1 = require("./services/event");
+const playlist_1 = require("./services/playlist");
 const player = player_1.Player.getInstance('#player');
 //Queue.queue('DyDfgMOUjCI');
 /* Queue.queue('kJQP7kiw5Fk');
@@ -121,21 +122,39 @@ const navBlock = `
                         const id = element.getAttribute('data-attribute');
                         const song = song_1.Song.getSongFromList(response, id);
                         if (song) {
-                            search_1.Search.youTubeSearch(song.getTitle() + ' ' + song.getArtistName())
-                                .then(videoId => {
-                                const action = element.getAttribute('data-attribute-action');
-                                if (videoId) {
-                                    song.setVideoId(videoId);
+                            const action = element.getAttribute('data-attribute-action');
+                            playlist_1.Playlist.getSong(song.getId())
+                                .then(savedSong => {
+                                if (savedSong && savedSong.length > 0) {
                                     if (action === 'play') {
                                         player.queueAndPlay(song);
                                     }
                                     else {
                                         queue_1.Queue.queue(song);
                                     }
-                                    console.log(queue_1.Queue.getCurrentQueue());
                                 }
                                 else {
-                                    console.log('Invalid song ID : ', id);
+                                    // fetch videoId and save song
+                                    search_1.Search.youTubeSearch(song.getTitle() + ' ' + song.getArtistName())
+                                        .then(videoId => {
+                                        const action = element.getAttribute('data-attribute-action');
+                                        if (videoId) {
+                                            song.setVideoId(videoId);
+                                            if (action === 'play') {
+                                                player.queueAndPlay(song);
+                                            }
+                                            else {
+                                                queue_1.Queue.queue(song);
+                                            }
+                                            playlist_1.Playlist.saveSong(song)
+                                                .then(() => console.log('Song saved'))
+                                                .catch(err => console.log(err));
+                                            console.log(queue_1.Queue.getCurrentQueue());
+                                        }
+                                        else {
+                                            console.log('Invalid song ID : ', id);
+                                        }
+                                    });
                                 }
                             });
                         }

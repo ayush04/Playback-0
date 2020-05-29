@@ -11,6 +11,7 @@ import playCountRoutes from './routes/playcount';
 import authRoutes from './routes/google-oauth';
 
 import oauth from './controllers/google-oauth';
+import SECRET from './secret/secret';
     
 const app = express();
 
@@ -32,7 +33,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-connect('<connection_string>')
+connect(SECRET.MONGODB_CONNECTION_STRING)
     .then(() => {
         app.listen(3000); 
     })

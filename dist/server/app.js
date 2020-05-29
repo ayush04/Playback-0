@@ -14,6 +14,7 @@ const playlist_1 = __importDefault(require("./routes/playlist"));
 const playcount_1 = __importDefault(require("./routes/playcount"));
 const google_oauth_1 = __importDefault(require("./routes/google-oauth"));
 const google_oauth_2 = __importDefault(require("./controllers/google-oauth"));
+const secret_2 = __importDefault(require("./secret/secret"));
 const app = express_1.default();
 app.use(cors_1.default());
 app.use(body_parser_1.json());
@@ -29,7 +30,7 @@ app.use((err, req, res, next) => {
         message: err.message
     });
 });
-mongoose_1.connect('<connection_string>')
+mongoose_1.connect(secret_2.default.MONGODB_CONNECTION_STRING)
     .then(() => {
     app.listen(3000);
 })

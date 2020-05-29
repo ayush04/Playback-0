@@ -6,6 +6,10 @@ const playlistSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     songs: [String]
 });
 exports.Playlist = mongoose_1.model('Playlist', playlistSchema);
