@@ -52,6 +52,10 @@ class Queue {
     static updateCurrentPlayingTrack(trackId) {
         Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
+    static getSongFromTrackId(trackId) {
+        const song = Queue._queue.filter(song => song.getVideoId() === trackId);
+        return song[0];
+    }
     static deleteTrack(videoId) {
         const pos = Queue._queue.findIndex(song => song.getVideoId() === videoId);
         const song = Queue._queue[pos];

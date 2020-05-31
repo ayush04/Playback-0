@@ -61,6 +61,11 @@ export class Queue {
         Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
 
+    static getSongFromTrackId(trackId: string): Song {
+        const song = Queue._queue.filter(song => song.getVideoId() === trackId);
+        return song[0];
+    }
+
     static deleteTrack(videoId: string): void {
         const pos = Queue._queue.findIndex(song => song.getVideoId() === videoId);
         const song = Queue._queue[pos];

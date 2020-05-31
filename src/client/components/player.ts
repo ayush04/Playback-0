@@ -4,6 +4,7 @@ import { Queue } from './queue';
 import { Song } from '../models/song';
 import { ProgressBar } from './progess-bar';
 import { Utils } from '../services/utils';
+import { Playlist } from '../services/playlist';
 
 /**
  * TODO: Format this class - messy code
@@ -26,8 +27,14 @@ export class Player extends YouTubePlayer {
     };
 
     private loadTrack(trackId: string): void {
+        if (Player._currentTrackId) {
+            // need a better way to find song ID
+            Playlist.removeCurrentlyPlaying(Queue.getSongFromTrackId(Player._currentTrackId).getId());
+        }
         Player._currentTrackId = trackId;
         Player.player.load(trackId);
+        // need a better way to find song ID
+        Playlist.addCurrentlyPlaying(Queue.getSongFromTrackId(trackId).getId());
     }
 
     playTrack(trackId?: string): void {

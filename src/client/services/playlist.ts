@@ -79,4 +79,24 @@ export class Playlist {
             return Promise.resolve('Playlist not yet saved');
         }
     }
+
+    static addCurrentlyPlaying(id: String): Promise<any> {
+        return fetch(this.API_PATH + 'song/add/' + id, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    static removeCurrentlyPlaying(id: String): Promise<any> {
+        return fetch(this.API_PATH + 'song/remove/' + id, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
 }

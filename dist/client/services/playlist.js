@@ -73,6 +73,24 @@ class Playlist {
             return Promise.resolve('Playlist not yet saved');
         }
     }
+    static addCurrentlyPlaying(id) {
+        return fetch(this.API_PATH + 'song/add/' + id, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+    static removeCurrentlyPlaying(id) {
+        return fetch(this.API_PATH + 'song/remove/' + id, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
 }
 exports.Playlist = Playlist;
 Playlist.API_PATH = 'http://localhost:3000/';

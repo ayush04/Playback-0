@@ -8,6 +8,7 @@ const queue_1 = require("./queue");
 const song_1 = require("../models/song");
 const progess_bar_1 = require("./progess-bar");
 const utils_1 = require("../services/utils");
+const playlist_1 = require("../services/playlist");
 /**
  * TODO: Format this class - messy code
  */
@@ -25,8 +26,14 @@ class Player extends yt_player_1.default {
     }
     ;
     loadTrack(trackId) {
+        if (Player._currentTrackId) {
+            // need a better way to find song ID
+            playlist_1.Playlist.removeCurrentlyPlaying(queue_1.Queue.getSongFromTrackId(Player._currentTrackId).getId());
+        }
         Player._currentTrackId = trackId;
         Player.player.load(trackId);
+        // need a better way to find song ID
+        playlist_1.Playlist.addCurrentlyPlaying(queue_1.Queue.getSongFromTrackId(trackId).getId());
     }
     playTrack(trackId) {
         if (trackId) {
