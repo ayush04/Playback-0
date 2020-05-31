@@ -13,7 +13,15 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-
+    <script>
+        const onSignIn = (googleUser) => {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+    </script>
 </head>
 <body>
     <div class="navbar-top bg-white">
@@ -37,7 +45,8 @@
             </form>
         </div>
         <div class="padder-v-m float-sm-right m-2">
-            <div class="g-signin2" id="signin-btn"></div>
+            <div class="g-signin2" id="signin-btn" data-onsuccess="onSignIn"></div>
+            <!--a href="http://playback.io:3000/auth/google">Sign-in with Google</a-->
         </div>
     </div>
     <div class="aside-wrap">
@@ -56,7 +65,12 @@
                 </div>
                 <div class="col w-md bg-light">
                     <div class="wrapper-sm">
-                        <div class="text-black-50 text-muted">Playlist</div>
+                        <div class="text-black-50 text-muted">
+                            Playlist
+                            <a class="float-right" title="Save playlist" id="save-playlist">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </a>
+                        </div>
                         <ul class="list-group no-border" id="playlist"></ul>
                     </div>
                 </div>
