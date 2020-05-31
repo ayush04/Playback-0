@@ -5,6 +5,8 @@ import { Search } from './services/search';
 import { Song } from './models/song';
 import { AppEvent } from './services/event';
 import { Playlist } from './services/playlist';
+import { Utils } from './services/utils';
+import { Storage } from './services/storage';
 
 const player = Player.getInstance('#player');
 
@@ -130,6 +132,7 @@ searchBtn?.addEventListener('click', (event) => {
                             Playlist.getSong(song.getId())
                             .then(savedSong => {
                                 if (savedSong && savedSong.length > 0) {
+                                    song.setVideoId(savedSong[0].videoId);
                                     if (action === 'play') {
                                         player.queueAndPlay(song);
                                     }
@@ -216,5 +219,21 @@ const updateQueueListener = () => {
         });
     }
 }
+
+document.getElementById('save-playlist')?.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (!Storage.get('CURRENT_PLAYLIST_ID')) {
+        Playlist.savePlaylist(Utils.randomNumber(), Queue.getCurrentSongIds())
+        .then(response => {
+            console.log(response)
+            if (response && response.id) {
+                Storage.save('CURRENT_PLAYLIST_ID', response.id);
+            }
+        })
+        .catch(err => console.log(err));    
+    }
+    else {
+    }
+});
 AppEvent.listen('queue-updated', updateQueueListener);
 Queue.initalize();

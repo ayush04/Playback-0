@@ -1,5 +1,5 @@
 "use strict";
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", { value: true });
 const player_1 = require("./components/player");
 const queue_1 = require("./components/queue");
@@ -8,6 +8,8 @@ const search_1 = require("./services/search");
 const song_1 = require("./models/song");
 const event_1 = require("./services/event");
 const playlist_1 = require("./services/playlist");
+const utils_1 = require("./services/utils");
+const storage_1 = require("./services/storage");
 const player = player_1.Player.getInstance('#player');
 //Queue.queue('DyDfgMOUjCI');
 /* Queue.queue('kJQP7kiw5Fk');
@@ -126,6 +128,7 @@ const navBlock = `
                             playlist_1.Playlist.getSong(song.getId())
                                 .then(savedSong => {
                                 if (savedSong && savedSong.length > 0) {
+                                    song.setVideoId(savedSong[0].videoId);
                                     if (action === 'play') {
                                         player.queueAndPlay(song);
                                     }
@@ -211,6 +214,21 @@ const updateQueueListener = () => {
         });
     }
 };
+(_c = document.getElementById('save-playlist')) === null || _c === void 0 ? void 0 : _c.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (!storage_1.Storage.get('CURRENT_PLAYLIST_ID')) {
+        playlist_1.Playlist.savePlaylist(utils_1.Utils.randomNumber(), queue_1.Queue.getCurrentSongIds())
+            .then(response => {
+            console.log(response);
+            if (response && response.id) {
+                storage_1.Storage.save('CURRENT_PLAYLIST_ID', response.id);
+            }
+        })
+            .catch(err => console.log(err));
+    }
+    else {
+    }
+});
 event_1.AppEvent.listen('queue-updated', updateQueueListener);
 queue_1.Queue.initalize();
 //# sourceMappingURL=app.js.map

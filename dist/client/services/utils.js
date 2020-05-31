@@ -11,4 +11,10 @@ class Utils {
     }
 }
 exports.Utils = Utils;
+Utils.randomNumber = () => {
+    const random = function () {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    };
+    return (random() + '-' + random());
+};
 //# sourceMappingURL=utils.js.map

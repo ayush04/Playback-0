@@ -26,7 +26,9 @@ export const saveSong: RequestHandler = (req: Request, res: Response) => {
         return res.status(201).json(response);
     })
     .then(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 }
 
@@ -37,7 +39,9 @@ export const getSong: RequestHandler = (req: Request, res: Response) => {
         return res.status(200).json(song);
     })
     .then(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 }
 
@@ -48,6 +52,7 @@ export const createPlaylist: RequestHandler = (req: Request, res: Response) => {
     const playList = new Playlist({
         id: randomNumber(),
         name: playListName,
+        createdBy: '1',
         songs: songArr
     });
 
@@ -55,7 +60,9 @@ export const createPlaylist: RequestHandler = (req: Request, res: Response) => {
         return res.status(201).json(response);
     })
     .catch(err => {
-        return res.status(400).json(err);    
+        return res.status(400).json({
+            error: err
+        });    
     });
 }
 
@@ -67,7 +74,9 @@ export const addSongToPlaylist: RequestHandler = (req: Request, res: Response) =
         return res.status(200).json(response);
     })
     .catch(err => {
-        return res.status(400).json(err);    
+        return res.status(400).json({
+            error: err
+        });    
     });
 }
 
@@ -79,8 +88,24 @@ export const removeSongFromPlaylist: RequestHandler = (req: Request, res: Respon
         return res.status(200).json(response);
     })
     .catch(err => {
-        return res.status(400).json(err);    
+        return res.status(400).json({
+            error: err
+        });    
     });
+}
+
+export const getPlaylist: RequestHandler = (req: Request, res: Response) => {
+    const playlistId = req.params.id;
+
+    Playlist.find({ id: playlistId })
+        .then(playlist => {
+            return res.status(200).json(playlist);
+        })
+        .catch(err => {
+            return res.status(400).json({
+                error: err
+            })
+        });
 }
 
 export const addCurrentlyPlaying: RequestHandler = (req: Request, res: Response) => {

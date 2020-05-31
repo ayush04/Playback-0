@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const song_1 = require("../models/song");
 const event_1 = require("../services/event");
 const storage_1 = require("../services/storage");
+const playlist_1 = require("../services/playlist");
 class Queue {
     static initalize() {
         Queue._queue = Queue._fetchPreviousQueue();
@@ -20,6 +21,7 @@ class Queue {
     }
     static queue(song) {
         Queue._queue.push(song);
+        playlist_1.Playlist.addSongToPlaylist(song.getId());
         storage_1.Storage.save('CURRENT_QUEUE', Queue._queue);
         event_1.AppEvent.emit('queue-updated');
     }
@@ -44,12 +46,17 @@ class Queue {
     static getCurrentQueue() {
         return Queue._queue;
     }
+    static getCurrentSongIds() {
+        return Queue._queue.map(song => song.getId());
+    }
     static updateCurrentPlayingTrack(trackId) {
         Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
     static deleteTrack(videoId) {
         const pos = Queue._queue.findIndex(song => song.getVideoId() === videoId);
+        const song = Queue._queue[pos];
         Queue._queue.splice(pos, 1);
+        playlist_1.Playlist.removeSongFromPlaylist(song.getId());
         event_1.AppEvent.emit('queue-updated');
         storage_1.Storage.save('CURRENT_QUEUE', Queue._queue);
     }

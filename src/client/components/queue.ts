@@ -1,6 +1,7 @@
 import { Song } from "../models/song";
 import { AppEvent } from '../services/event';
 import { Storage } from '../services/storage';
+import { Playlist } from "../services/playlist";
 
 export class Queue {
     private static _queue: Array<Song>;
@@ -22,6 +23,7 @@ export class Queue {
     }
     static queue(song: Song): void {
         Queue._queue.push(song);
+        Playlist.addSongToPlaylist(song.getId());
         Storage.save('CURRENT_QUEUE', Queue._queue);
         AppEvent.emit('queue-updated');
     }
@@ -51,13 +53,19 @@ export class Queue {
         return Queue._queue;
     }
 
+    static getCurrentSongIds(): Array<String> {
+        return Queue._queue.map(song => song.getId());
+    }
+
     static updateCurrentPlayingTrack(trackId: string): void {
         Queue._currentTrack = Queue._queue.findIndex(song => song.getId() === trackId);
     }
 
     static deleteTrack(videoId: string): void {
         const pos = Queue._queue.findIndex(song => song.getVideoId() === videoId);
+        const song = Queue._queue[pos];
         Queue._queue.splice(pos, 1);
+        Playlist.removeSongFromPlaylist(song.getId());
         AppEvent.emit('queue-updated');
         Storage.save('CURRENT_QUEUE', Queue._queue);
     }

@@ -23,7 +23,9 @@ exports.saveSong = (req, res) => {
         return res.status(201).json(response);
     })
         .then(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 };
 exports.getSong = (req, res) => {
@@ -32,7 +34,9 @@ exports.getSong = (req, res) => {
         return res.status(200).json(song);
     })
         .then(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 };
 exports.createPlaylist = (req, res) => {
@@ -41,13 +45,16 @@ exports.createPlaylist = (req, res) => {
     const playList = new playlist_1.Playlist({
         id: utils_1.randomNumber(),
         name: playListName,
+        createdBy: '1',
         songs: songArr
     });
     playList.save().then(response => {
         return res.status(201).json(response);
     })
         .catch(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 };
 exports.addSongToPlaylist = (req, res) => {
@@ -57,7 +64,9 @@ exports.addSongToPlaylist = (req, res) => {
         return res.status(200).json(response);
     })
         .catch(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
     });
 };
 exports.removeSongFromPlaylist = (req, res) => {
@@ -67,7 +76,21 @@ exports.removeSongFromPlaylist = (req, res) => {
         return res.status(200).json(response);
     })
         .catch(err => {
-        return res.status(400).json(err);
+        return res.status(400).json({
+            error: err
+        });
+    });
+};
+exports.getPlaylist = (req, res) => {
+    const playlistId = req.params.id;
+    playlist_1.Playlist.find({ id: playlistId })
+        .then(playlist => {
+        return res.status(200).json(playlist);
+    })
+        .catch(err => {
+        return res.status(400).json({
+            error: err
+        });
     });
 };
 exports.addCurrentlyPlaying = (req, res) => {
