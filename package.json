@@ -37,7 +37,7 @@
     "express": "^4.17.1",
     "font-awesome": "^4.7.0",
     "mongoose": "^5.9.13",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "yt-player": "^3.4.3"
   }
 }
