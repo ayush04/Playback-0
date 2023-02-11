@@ -22,7 +22,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/youtube": "0.0.38",
     "@types/yt-player": "^3.4.2",
-    "nodemon": "^2.0.3",
+    "nodemon": "^2.0.20",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
     "webpack": "^4.42.1",
